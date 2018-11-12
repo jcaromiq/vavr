@@ -1,12 +1,11 @@
 package io.vavr.control;
 
 import io.vavr.concurrent.Future;
-
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-class IO<T> {
+public class IO<T> {
     private Supplier<? extends T> f;
 
     private IO(Supplier<? extends T> f) {
