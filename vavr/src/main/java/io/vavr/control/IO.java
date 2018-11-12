@@ -1,6 +1,7 @@
 package io.vavr.control;
 
 import io.vavr.concurrent.Future;
+
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -27,5 +28,9 @@ public class IO<T> {
     public void async(Consumer<Either<Throwable, T>> callback) {
         Future.of(Executors.newSingleThreadExecutor(), this::attempt)
                 .onSuccess(callback);
+    }
+
+    public Future<Either<Throwable, T>> async() {
+        return Future.of(Executors.newSingleThreadExecutor(), this::attempt);
     }
 }
