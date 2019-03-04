@@ -673,4 +673,19 @@ public class OptionTest extends AbstractValueTest {
         assertThat(right.get()).isEqualTo(1);
         assertThat(left.getLeft()).isEqualTo("Empty");
     }
+
+    @Test
+    public void mapOverSome() {
+        final Option<Integer> applicative = Option
+                .map(Option.some(1), Option.some(2), (o1, o2) -> o1+o2);
+        assertThat(applicative.isDefined()).isTrue();
+        assertThat(applicative.get()).isEqualTo(3);
+    }
+
+    @Test
+    public void mapOverNone() {
+        final Option<Integer> applicative = Option
+                .map(Option.some(1), Option.none(), (o1, o2) -> o1 + o2);
+        assertThat(applicative.isDefined()).isFalse();
+    }
 }

@@ -19,9 +19,8 @@
  */
 package io.vavr.control;
 
-import io.vavr.PartialFunction;
-import io.vavr.Tuple;
-import io.vavr.Value;
+import io.vavr.*;
+import io.vavr.collection.Array;
 import io.vavr.collection.Iterator;
 import io.vavr.collection.Seq;
 import io.vavr.collection.Vector;
@@ -130,8 +129,7 @@ public interface Option<T> extends Value<T>, Serializable {
      * @return the single instance of {@code None}
      */
     static <T> Option<T> none() {
-        @SuppressWarnings("unchecked")
-        final None<T> none = (None<T>) None.INSTANCE;
+        @SuppressWarnings("unchecked") final None<T> none = (None<T>) None.INSTANCE;
         return none;
     }
 
@@ -186,6 +184,69 @@ public interface Option<T> extends Value<T>, Serializable {
     static <T> Option<T> ofOptional(Optional<? extends T> optional) {
         Objects.requireNonNull(optional, "optional is null");
         return optional.<Option<T>>map(Option::of).orElseGet(Option::none);
+    }
+
+    /**
+     * Compute over two options and apply the given function in case of all
+     * options are Some
+     * @param option1 a given option
+     * @param option2 a given option
+     * @param f function to apply in case of all Optionals are Some
+     * @param <T> type of input Option
+     * @param <R> type of return of the applied function
+     * @return {@code Some(<R>} if options are present, {@code None} otherwise
+     */
+    static <T,R> Option<R> map(Option<T> option1,
+                               Option<T> option2,
+                               Function2<T, T, R> f) {
+        if (Array.of(option1, option2).forAll(Option::isDefined)) {
+            return Option.some(f.apply(option1.get(), option2.get()));
+        }
+        return Option.none();
+    }
+
+    /**
+     * Compute over two options and apply the given function in case of all
+     * options are Some
+     * @param option1 a given option
+     * @param option2 a given option
+     * @param option3 a given option
+     * @param f function to apply in case of all Optionals are Some
+     * @param <T> type of input Option
+     * @param <R> type of return of the applied function
+     * @return {@code Some(<R>} if options are present, {@code None} otherwise
+     */
+    static <T,R> Option<R> map(Option<T> option1,
+                               Option<T> option2,
+                               Option<T> option3,
+                               Function3<T, T, T, R> f) {
+        if (Array.of(option1, option2, option3).forAll(Option::isDefined)) {
+            return Option.some(f.apply(option1.get(), option2.get(), option3.get()));
+        }
+        return Option.none();
+    }
+
+    /**
+     * Compute over two options and apply the given function in case of all
+     * options are Some
+     * @param option1 a given option
+     * @param option2 a given option
+     * @param option3 a given option
+     * @param option4 a given option
+     * @param f function to apply in case of all Optionals are Some
+     * @param <T> type of input Option
+     * @param <R> type of return of the applied function
+     * @return {@code Some(<R>} if options are present, {@code None} otherwise
+     */
+    static <T,R> Option<R> map(Option<T> option1,
+                               Option<T> option2,
+                               Option<T> option3,
+                               Option<T> option4,
+                               Function4<T, T, T, T, R> f) {
+        if (Array.of(option1, option2, option3, option4).forAll(Option::isDefined)) {
+            return Option.some(f.apply(option1.get(), option2.get(), option3.get(), option4.get()));
+        }
+        return Option.none();
     }
 
     /**
