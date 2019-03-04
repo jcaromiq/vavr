@@ -67,4 +67,46 @@ public class IOTest {
             return 2 + 2;
         };
     }
+
+    @Test
+    public void shouldExecuteSuccessfully1() {
+        IO.IOMonad<Integer> operations = () -> 1 + 1;
+        assertThat(operations.attempt().isRight()).isTrue();
+        assertThat(operations.attempt().get()).isEqualTo(2);
+        assertThat(operations.operation()).isEqualTo(2);
+
+    }
+
+
+    @Test
+    public void shouldFailInCaseOfException1() {
+        IO.IOMonad<String> boom = () -> {
+            throw new RuntimeException("Boom");
+        };
+        assertThat(boom.attempt().isLeft()).isTrue();
+    }
+
+
+    @Test
+    public void shouldExecuteAsyncOperation1() throws InterruptedException {
+        IO.IOMonad<String> operation = () -> "a";
+        operation.asyncInvoke(s -> {
+            System.out.println("operation finished with result " + s);
+            assertThat(s).isEqualTo("aa");
+        });
+
+        System.out.println("Waiting result..");
+        Thread.sleep(1000);
+
+    }
+
+    @Test
+    public void shouldGetFutureOfAsyncOperation1() {
+        IO.IOMonad<String> operation = () -> "a";
+
+        Future<Either<Throwable, String>> future = operation.asyncInvoke();
+        future.await();
+        assertThat(future.isCompleted()).isTrue();
+        assertThat(future.get().isRight()).isTrue();
+    }
 }
